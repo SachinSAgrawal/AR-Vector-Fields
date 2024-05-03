@@ -96,7 +96,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         // Create lines in X direction
         for i in 0...linesX {
-            let lineNode = createLineNode(length: height, thickness: 0.003, color: UIColor.lightGray)
+            let lineNode = createLineNode(length: height, thickness: 0.003, color: UIColor.gray)
             // Round positionX to the nearest meter
             let positionX = round(gridSpacing * CGFloat(i) / gridSpacing) * gridSpacing
             lineNode.position = SCNVector3(positionX, 0, height / 2)
@@ -105,7 +105,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
         // Create lines in Z direction
         for j in 0...linesZ {
-            let lineNode = createLineNode(length: width, thickness: 0.003, color: UIColor.lightGray)
+            let lineNode = createLineNode(length: width, thickness: 0.003, color: UIColor.gray)
             // Round positionZ to the nearest meter
             let positionZ = round(gridSpacing * CGFloat(j) / gridSpacing) * gridSpacing
             lineNode.position = SCNVector3(width / 2, 0, positionZ)
@@ -114,18 +114,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         
         // Create main x axis
-        let xNode = createLineNode(length: width, thickness: 0.009, color: UIColor.red)
+        let xNode = createLineNode(length: width, thickness: 0.008, color: UIColor.red)
         xNode.position = SCNVector3(width/2, 0, height/2)
         gridNode.addChildNode(xNode)
         
         // Create main y axis
-        let yNode = createLineNode(length: width, thickness: 0.009, color: UIColor.green)
+        let yNode = createLineNode(length: width, thickness: 0.008, color: UIColor.green)
         yNode.eulerAngles = SCNVector3(0, CGFloat.pi / 2, 0)
         yNode.position = SCNVector3(width/2, 0, height/2)
         gridNode.addChildNode(yNode)
         
         // Create main z axis
-        let zNode = createLineNode(length: width, thickness: 0.009, color: UIColor.blue)
+        let zNode = createLineNode(length: width, thickness: 0.008, color: UIColor.blue)
         zNode.eulerAngles = SCNVector3(0, 0, CGFloat.pi / 2)
         zNode.position = SCNVector3(width/2, 0, height/2)
         gridNode.addChildNode(zNode)
@@ -175,15 +175,52 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             return vectorComps
         }
         
+        // Define a function to compute the Taylor series expansion of sin(x) up to ten terms
+        func taylorSeriesSin(_ xString: String) -> String {
+            return "\(xString) - (\(xString)^3 / 3) + (\(xString)^5 / 5) - (\(xString)^7 / 7) + (\(xString)^9 / 9) - (\(xString)^11 / 11) + (\(xString)^13 / 13) - (\(xString)^15 / 15) + (\(xString)^17 / 17) - (\(xString)^19 / 19)"
+        }
+
+        // Define a function to compute the Taylor series expansion of cos(x) up to ten terms
+        func taylorSeriesCos(_ xString: String) -> String {
+            return "1 - (\(xString)^2 / 2) + (\(xString)^4 / 24) - (\(xString)^6 / 720) + (\(xString)^8 / 40320) - (\(xString)^10 / 362880) + (\(xString)^12 / 47900160) - (\(xString)^14 / 87178291200) + (\(xString)^16 / 20922789888000) - (\(xString)^18 / 6402373705728000) + (\(xString)^20 / 2432902008176640000)"
+        }
+
         // Function to evaluate a component expression at a given point
         func evaluateComponent(_ expression: String, x: Float, y: Float, z: Float) -> Float {
+            // Define regular expression patterns to match sin and cos function calls
+            let sinPattern = "sin\\(([\\w\\d.+-]*)\\)"
+            let cosPattern = "cos\\(([\\w\\d.+-]*)\\)"
+            
+            // Create regular expressions using the patterns
+            let sinRegex = try! NSRegularExpression(pattern: sinPattern, options: [])
+            let cosRegex = try! NSRegularExpression(pattern: cosPattern, options: [])
+            
+            // Replace occurrences of sin function calls with their Taylor series expansions
+            var replacedExpression = expression
+            let sinMatches = sinRegex.matches(in: expression, options: [], range: NSRange(location: 0, length: expression.utf16.count))
+            for match in sinMatches.reversed() {
+                let argumentRange = Range(match.range(at: 1), in: expression)!
+                let argument = String(expression[argumentRange])
+                let taylorValue = taylorSeriesSin(argument)
+                replacedExpression = replacedExpression.replacingCharacters(in: Range(match.range, in: expression)!, with: "\(taylorValue)")
+            }
+            
+            // Replace occurrences of cos function calls with their Taylor series expansions
+            let cosMatches = cosRegex.matches(in: expression, options: [], range: NSRange(location: 0, length: expression.utf16.count))
+            for match in cosMatches.reversed() {
+                let argumentRange = Range(match.range(at: 1), in: expression)!
+                let argument = String(expression[argumentRange])
+                let taylorValue = taylorSeriesCos(argument)
+                replacedExpression = replacedExpression.replacingCharacters(in: Range(match.range, in: expression)!, with: "\(taylorValue)")
+            }
+            
             // Replace 'x', 'y', and 'z' placeholders with their corresponding values in the expression
-            let replacedExpression = expression
+            replacedExpression = replacedExpression
                 .replacingOccurrences(of: "x", with: "\(x)")
                 .replacingOccurrences(of: "y", with: "\(y)")
                 .replacingOccurrences(of: "z", with: "\(z)")
             
-            // Evaluate the expression and retrieve the numeric value
+            // Evaluate the modified expression and retrieve the numeric value
             if let value = NSExpression(format: replacedExpression).expressionValue(with: nil, context: nil) as? NSNumber {
                 return value.floatValue
             }
