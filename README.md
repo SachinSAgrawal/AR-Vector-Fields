@@ -1,16 +1,16 @@
 # Vector Fields
 
 ## About
-Simply enter a vector field to view it in Augmented Reality. I created this app for the final project of my Multivariable Calculus class since I had been working with AR for a project completely unrelated to school where some of the basic parts like the arrows themselves could be reused, and I figured something like this could be fun. 
+Simply enter a vector field to view it in Augmented Reality. I created this app for the final project of my Multivariable Calculus class since I had been working with AR for a project completely unrelated to school where some of the basic parts like the arrows themselves could be reused, and I figured something like this could be fun, especially since the project guidelines allowed us to do pretty much anything as long as some calculus was involved.
 
 ## Acknowledgments
 This is heavily based on this [cool Desmos 3D graph](https://www.desmos.com/3d/lwagvtqhn3) by Elliot Wymore that allows you input each component of a vector field and see it graphed. That was largely my reference for this project.
 
 ## Usage
-When the app is launched, there will be a popup asking you to input a vector field. Enter one in the text box in the top center of the app. As long as it is valid, it will be graphed. You should receive a warning popup if that is not the case. Please enter the vector field as one string, with each of the three components separated by commas, and no parentheses, then hit `Done`. Each component can be a function of `x`, `y`, `z`, or even constant. You can input almost anything, including square roots, absolute values, powers, and logarithms, but you might need to type them in as pseudo-Swift so it can be parsed properly. Also, the length of each arrow corresponds to the magnitude of the vector at that point.
+When the app is launched, there will be a popup asking you to input a vector field. Enter one in the text box in the top center of the app. As long as it is valid, it will be graphed. You should receive a warning popup if that is not the case. Please enter the vector field as one string, with each of the three components separated by commas, and no parentheses, then hit `Done`. Each component can be a function of `x`, `y`, `z`, or even constant. You can input almost anything, including square roots, absolute values, powers, and logarithms, but you might need to type them in as pseudo-Swift so it can be parsed properly. Also, the length of each arrow corresponds to the magnitude of the vector at that point, and lastly, people occlusion is enabled.
 
 ## Challenges
-* Orienting the vector correctly: solved using the `look(at:up:localFront:)`, where `up` and `localFront` are both the **j** vector, instead of using the `atan2` function, which was my inital method.
+* Orienting the vector correctly: solved using the `look(at:up:localFront:)`, where `up` and `localFront` are both the *j* vector, instead of using the `atan2` function, which was my inital method.
 * Passing in custom values to the vector field: solved using `NSExpression` to evaluate each component, where the variables are replaced with their actual values using `replacingOccurrences(of:with:)`.
 
 ## Installation
@@ -40,7 +40,7 @@ I have not tested this app super rigorously, so I would not be surpised if there
 - [ ] Vectors that seem like they should work will crash the app. Workaround: just restart it and enter it again.
 
 #### Resolved
-- [x] Trigonometric functions are not supported becuase they are forbidden from `NSExpression`. Fixed by replacing `sin` and `cos` with the first 10 terms of their [Taylor Series](https://en.wikipedia.org/wiki/Taylor_series#Trigonometric_functions).
+- [x] Trigonometric functions are not supported becuase they are forbidden from `NSExpression`. Partially fixed by replacing only `sin` and `cos` with the first 10 terms of their [Taylor Series](https://en.wikipedia.org/wiki/Taylor_series#Trigonometric_functions), as suggested by my amazing math teacher.
 
 ## Author
 I'm a self-taught programmer who knows many languages and I'm into app, game, and web development. If you would like to contact me, my email is [github@sachin.email](mailto:github@sachin.email).

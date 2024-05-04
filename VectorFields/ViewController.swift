@@ -41,22 +41,36 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show initial popup
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.showInitialPopup()
+            self.viewLoadedInitialPopup()
         }
     }
     
     // MARK: Popups
     
     // Function to display the initial popup when the view loads
-    func showInitialPopup() {
+    func viewLoadedInitialPopup() {
         let alertController = UIAlertController(title: "Welcome", message: "Please enter a vector field into the text box to get started.", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
     
     // Function to display an invalid vector field popup
-    func showInvalidVectorFieldPopup() {
-        let alertController = UIAlertController(title: "Invalid", message: "Please enter a vector field with 3 components separated by commas.", preferredStyle: .alert)
+    func invalidVectorFieldPopup() {
+        let alertController = UIAlertController(title: "Invalid", message: "The vector field must have 3 components separated by commas.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    // Function to display popup if vector field has trigonometric functions
+    func vectorFieldWithTrigPopup() {
+        let alertController = UIAlertController(title: "Invalid", message: "Trigonometric functions besides sin and cos are not allowed.", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    // Function to display popup if vector field has parentheses surrounding it
+    func vectorFieldWithParenPopup() {
+        let alertController = UIAlertController(title: "Invalid", message: "Please do not put parentheses surrounding the vector field.", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
@@ -153,13 +167,43 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             return
         }
         
+        let trigFunctions = ["tan", "csc", "sec", "cot", "tangent", "cosecant", "secant", "cotangent"]
+
+        // Check if any trigFunctions exist in the vectorField string
+        let hasKeyword = trigFunctions.contains {
+            keyword in vectorField.contains(keyword)
+        }
+        
+        // If so then do not continue and show a popup warning
+        guard !hasKeyword else {
+            vectorFieldWithTrigPopup()
+            return
+        }
+        
         // Split the vector field input into its components
         let components = vectorField.split(separator: ",")
         
         // Check if there are exactly 3 components
         guard components.count == 3 else {
             // Display an invalid vector field popup if the number of components is not 3
-            showInvalidVectorFieldPopup()
+            invalidVectorFieldPopup()
+            return
+        }
+        
+        // Check if the number of open parentheses matches the number of closed ones in the first and third components
+        let firstComponent = components[0]
+        let thirdComponent = components[2]
+
+        let firstOpenParenthesesCount = firstComponent.filter { $0 == "(" }.count
+        let firstClosedParenthesesCount = firstComponent.filter { $0 == ")" }.count
+
+        let thirdOpenParenthesesCount = thirdComponent.filter { $0 == "(" }.count
+        let thirdClosedParenthesesCount = thirdComponent.filter { $0 == ")" }.count
+
+        guard firstOpenParenthesesCount == firstClosedParenthesesCount,
+              thirdOpenParenthesesCount == thirdClosedParenthesesCount else {
+            // Display an invalid vector field popup if the parentheses are not properly placed
+            vectorFieldWithParenPopup()
             return
         }
         
@@ -176,20 +220,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         
         // Define a function to compute the Taylor series expansion of sin(x) up to ten terms
-        func taylorSeriesSin(_ xString: String) -> String {
-            return "\(xString) - (\(xString)^3 / 3) + (\(xString)^5 / 5) - (\(xString)^7 / 7) + (\(xString)^9 / 9) - (\(xString)^11 / 11) + (\(xString)^13 / 13) - (\(xString)^15 / 15) + (\(xString)^17 / 17) - (\(xString)^19 / 19)"
+        func taylorSeriesSin(_ argString: String) -> String {
+            return "\(argString) - (\(argString)^3 / 3) + (\(argString)^5 / 5) - (\(argString)^7 / 7) + (\(argString)^9 / 9) - (\(argString)^11 / 11) + (\(argString)^13 / 13) - (\(argString)^15 / 15) + (\(argString)^17 / 17) - (\(argString)^19 / 19)"
         }
 
         // Define a function to compute the Taylor series expansion of cos(x) up to ten terms
-        func taylorSeriesCos(_ xString: String) -> String {
-            return "1 - (\(xString)^2 / 2) + (\(xString)^4 / 24) - (\(xString)^6 / 720) + (\(xString)^8 / 40320) - (\(xString)^10 / 362880) + (\(xString)^12 / 47900160) - (\(xString)^14 / 87178291200) + (\(xString)^16 / 20922789888000) - (\(xString)^18 / 6402373705728000) + (\(xString)^20 / 2432902008176640000)"
+        func taylorSeriesCos(_ argString: String) -> String {
+            return "1 - (\(argString)^2 / 2) + (\(argString)^4 / 24) - (\(argString)^6 / 720) + (\(argString)^8 / 40320) - (\(argString)^10 / 362880) + (\(argString)^12 / 47900160) - (\(argString)^14 / 87178291200) + (\(argString)^16 / 20922789888000) - (\(argString)^18 / 6402373705728000) + (\(argString)^20 / 2432902008176640000)"
         }
 
         // Function to evaluate a component expression at a given point
         func evaluateComponent(_ expression: String, x: Float, y: Float, z: Float) -> Float {
             // Define regular expression patterns to match sin and cos function calls
-            let sinPattern = "sin\\(([\\w\\d.+-]*)\\)"
-            let cosPattern = "cos\\(([\\w\\d.+-]*)\\)"
+            let sinPattern = "(?<!co)(?i)sin(?:e)?\\(([\\w\\d.+-]*)\\)"
+            let cosPattern = "(?i)cos(?:ine)?\\(([\\w\\d.+-]*)\\)"
             
             // Create regular expressions using the patterns
             let sinRegex = try! NSRegularExpression(pattern: sinPattern, options: [])
@@ -216,9 +260,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             // Replace 'x', 'y', and 'z' placeholders with their corresponding values in the expression
             replacedExpression = replacedExpression
-                .replacingOccurrences(of: "x", with: "\(x)")
-                .replacingOccurrences(of: "y", with: "\(y)")
-                .replacingOccurrences(of: "z", with: "\(z)")
+                .replacingOccurrences(of: "x", with: "\(x)", options: .caseInsensitive)
+                .replacingOccurrences(of: "y", with: "\(y)", options: .caseInsensitive)
+                .replacingOccurrences(of: "z", with: "\(z)", options: .caseInsensitive)
             
             // Evaluate the modified expression and retrieve the numeric value
             if let value = NSExpression(format: replacedExpression).expressionValue(with: nil, context: nil) as? NSNumber {
