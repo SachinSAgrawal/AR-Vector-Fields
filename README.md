@@ -42,6 +42,11 @@ I have not tested this app super rigorously, so I would not be surpised if there
 #### Resolved
 - [x] Trigonometric functions are not supported becuase they are forbidden from `NSExpression`. Partially fixed by replacing only `sin` and `cos` with the first 10 terms of their [Taylor Series](https://en.wikipedia.org/wiki/Taylor_series#Trigonometric_functions), as suggested by my amazing math teacher.
 
+## Versions
+* 1.0 - initial release
+* 1.1 - sin/cos support
+* 1.2 - better error handling
+
 ## Author
 I'm a self-taught programmer who knows many languages and I'm into app, game, and web development. If you would like to contact me, my email is [github@sachin.email](mailto:github@sachin.email).
 
