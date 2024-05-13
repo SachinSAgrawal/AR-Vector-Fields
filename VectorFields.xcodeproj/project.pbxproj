@@ -11,6 +11,8 @@
 		03066B522BE27EC60033910C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03066B512BE27EC60033910C /* ViewController.swift */; };
 		03066B552BE27EC60033910C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 03066B542BE27EC60033910C /* Base */; };
 		03066B572BE27EC70033910C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03066B562BE27EC70033910C /* Assets.xcassets */; };
+		031816792BF105D400D87BC1 /* screenshot1.png in Resources */ = {isa = PBXBuildFile; fileRef = 031816772BF105D400D87BC1 /* screenshot1.png */; };
+		0318167A2BF105D400D87BC1 /* screenshot2.png in Resources */ = {isa = PBXBuildFile; fileRef = 031816782BF105D400D87BC1 /* screenshot2.png */; };
 		034281FF2BE2FFBF00C7379C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 034281FD2BE2FFBF00C7379C /* LaunchScreen.storyboard */; };
 		03571B032BE3C3720064DAF1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 03571B012BE3C3720064DAF1 /* README.md */; };
 		03571B042BE3C3720064DAF1 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03571B022BE3C3720064DAF1 /* LICENSE.txt */; };
@@ -22,6 +24,8 @@
 		03066B512BE27EC60033910C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		03066B542BE27EC60033910C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		03066B562BE27EC70033910C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		031816772BF105D400D87BC1 /* screenshot1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot1.png; sourceTree = "<group>"; };
+		031816782BF105D400D87BC1 /* screenshot2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot2.png; sourceTree = "<group>"; };
 		034281FE2BE2FFBF00C7379C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		03571B012BE3C3720064DAF1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03571B022BE3C3720064DAF1 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
@@ -43,6 +47,8 @@
 			children = (
 				03571B022BE3C3720064DAF1 /* LICENSE.txt */,
 				03571B012BE3C3720064DAF1 /* README.md */,
+				031816772BF105D400D87BC1 /* screenshot1.png */,
+				031816782BF105D400D87BC1 /* screenshot2.png */,
 				03066B4C2BE27EC60033910C /* VectorFields */,
 				03066B4B2BE27EC60033910C /* Products */,
 			);
@@ -129,6 +135,8 @@
 				034281FF2BE2FFBF00C7379C /* LaunchScreen.storyboard in Resources */,
 				03066B572BE27EC70033910C /* Assets.xcassets in Resources */,
 				03571B032BE3C3720064DAF1 /* README.md in Resources */,
+				0318167A2BF105D400D87BC1 /* screenshot2.png in Resources */,
+				031816792BF105D400D87BC1 /* screenshot1.png in Resources */,
 				03571B042BE3C3720064DAF1 /* LICENSE.txt in Resources */,
 				03066B552BE27EC60033910C /* Base in Resources */,
 			);

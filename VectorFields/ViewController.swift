@@ -43,6 +43,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.viewLoadedInitialPopup()
         }
+        
+        // Render the grid and add it to the scene
+        let gridNode = renderGrid()
+        sceneView.scene.rootNode.addChildNode(gridNode)
     }
     
     // MARK: Popups
@@ -82,7 +86,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             node.removeFromParentNode()
         }
         
-        // Render the grid and add it to the scene
+        // Render a new grid and add it to the scene
         let gridNode = renderGrid()
         sceneView.scene.rootNode.addChildNode(gridNode)
         
@@ -221,7 +225,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Define a function to compute the Taylor series expansion of sin(x) up to ten terms
         func taylorSeriesSin(_ argString: String) -> String {
-            return "\(argString) - (\(argString)^3 / 3) + (\(argString)^5 / 5) - (\(argString)^7 / 7) + (\(argString)^9 / 9) - (\(argString)^11 / 11) + (\(argString)^13 / 13) - (\(argString)^15 / 15) + (\(argString)^17 / 17) - (\(argString)^19 / 19)"
+            return "\(argString) - (\(argString)^3 / 6) + (\(argString)^5 / 120) - (\(argString)^7 / 5040) + (\(argString)^9 / 362880) - (\(argString)^11 / 39916800) + (\(argString)^13 / 6227020800) - (\(argString)^15 / 1307674368000) + (\(argString)^17 / 17) - (\(argString)^19 / 121645100408832000)"
         }
 
         // Define a function to compute the Taylor series expansion of cos(x) up to ten terms
@@ -232,8 +236,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Function to evaluate a component expression at a given point
         func evaluateComponent(_ expression: String, x: Float, y: Float, z: Float) -> Float {
             // Define regular expression patterns to match sin and cos function calls
-            let sinPattern = "(?<!co)(?i)sin(?:e)?\\(([\\w\\d.+-]*)\\)"
-            let cosPattern = "(?i)cos(?:ine)?\\(([\\w\\d.+-]*)\\)"
+            let sinPattern = "(?<!co)(?i)sin(?:e)?\\(((?:[\\w\\d.+-]*[*/^])*[\\w\\d.+-]*)\\)"
+            let cosPattern = "(?i)cos(?:ine)?\\(((?:[\\w\\d.+-]*[*/^])*[\\w\\d.+-]*)\\)"
             
             // Create regular expressions using the patterns
             let sinRegex = try! NSRegularExpression(pattern: sinPattern, options: [])
