@@ -7,7 +7,7 @@
 Simply enter a vector field to view it in Augmented Reality. I created this app for the final project of my Multivariable Calculus class since I had been working with AR for a project completely unrelated to school where some of the basic parts like the arrows themselves could be reused, and I figured something like this could be fun, especially since the project guidelines allowed us to do pretty much anything as long as some calculus was involved.
 
 ## Acknowledgments
-This is heavily based on this cool [Desmos 3D graph](https://www.desmos.com/3d/lwagvtqhn3) by Elliot Wymore that allows you input each component of a vector field and see it graphed. That was largely my reference for this project. One thing to note though is that in Desmos, the z-axis is up, but in SceneKit, it is the y-axis, which does not really change many things. 
+This is heavily based on this cool [Desmos 3D graph](https://www.desmos.com/3d/lwagvtqhn3) by Elliot Wymore that allows you to input each component of a vector field and see it graphed. That was largely my reference for this project. One thing to note though is that in Desmos, the z-axis is up, but in SceneKit, it is the y-axis, which does not really change many things. 
 
 ## Usage
 When the app is launched, there will be a popup asking you to input a vector field. Enter one in the text box in the top center of the app. As long as it is valid, it will be graphed. You should receive a warning popup if that is not the case. Please enter the vector field as one string, with each of the three components separated by commas, and no parentheses, then hit `Done`. Each component can be a function of `x`, `y`, `z`, or even constant. You can input almost anything, including square roots, absolute values, powers, and logarithms, but you might need to type them in as pseudo-Swift so it can be parsed properly. This does mean that to multiply two or more terms, you need to type in a `*` between each one, etc. Also, the length of each arrow corresponds to the magnitude of the vector at that point, and lastly, people occlusion is enabled.
@@ -37,19 +37,23 @@ If using a simulator, you can only view the vector field along the x-axis.
 * [Swift](https://developer.apple.com/swift/) - A powerful and intuitive programming language for all Apple platforms.
 
 ## Bugs
-I have not tested this app super rigorously, so I would not be surpised if there were more than the known ones. If you find any, feel free to open up a new issue or even better, create a pull request fixing it.
+I have not tested this app super rigorously, so I would not be surprised if there were more than the known ones. If you find any, feel free to open up a new issue or even better, create a pull request fixing it.
 
 #### Known
-- [ ] Vectors that seem like they should work will crash the app. Workaround: just restart it and enter it again.
+- [ ] Vector fields that seem like they should work may crash the app. Workaround: just restart the app and enter the vector field again, but make sure the syntax looks correct and add parenthesis as needed.
 
 #### Resolved
-- [x] Trigonometric functions are not supported becuase they are forbidden from `NSExpression`. Partially fixed by replacing only `sin` and `cos` with the first 10 terms of their [Taylor Series](https://en.wikipedia.org/wiki/Taylor_series#Trigonometric_functions), as suggested by my amazing math teacher. This is sometimes a little bit finicky.
+- [x] Trigonometric functions are not supported because they are forbidden from `NSExpression`. Partially fixed by replacing only `sin` and `cos` with the first 10 terms of their [Taylor Series](https://en.wikipedia.org/wiki/Taylor_series#Trigonometric_functions), as suggested by my amazing math teacher. This is sometimes a little bit finicky.
 
 ## Change Log
 * v1.0 - initial release
 * v1.1 - some sin/cos support
 * v1.2 - better error handling
 * v1.3 - improved regex matching
+
+## To-Do List
+- [ ] Add ability to change world origin
+- [ ] Add sliders to control arrow attributes
 
 ## Contributors
 Sachin Agrawal: I'm a self-taught programmer who knows many languages and I'm into app, game, and web development. For more information, check out my website or Github profile. If you would like to contact me, my email is [github@sachin.email](mailto:github@sachin.email).
