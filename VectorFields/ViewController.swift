@@ -338,6 +338,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 
         // Enable people occlusion in the AR configuration
         configuration.frameSemantics.insert(.personSegmentationWithDepth)
+        
+        // Allow for detection of a marker
+        guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else {
+            fatalError("Missing expected asset catalog resources.")
+        }
+        
+        configuration.detectionImages = referenceImages
+        configuration.maximumNumberOfTrackedImages = 1
 
         // Run the view's session
         sceneView.session.run(configuration)
@@ -352,14 +360,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     // MARK: View Delegate
     
-    /*
     // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let imageAnchor = anchor as? ARImageAnchor else { return }
+    
+        // Move the world origin to center of image
+        DispatchQueue.main.async {
+            self.sceneView.session.setWorldOrigin(relativeTransform: imageAnchor.transform)
+        }
     }
-    */
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user

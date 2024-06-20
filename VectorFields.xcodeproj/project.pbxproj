@@ -11,6 +11,7 @@
 		03066B522BE27EC60033910C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03066B512BE27EC60033910C /* ViewController.swift */; };
 		03066B552BE27EC60033910C /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 03066B542BE27EC60033910C /* Base */; };
 		03066B572BE27EC70033910C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03066B562BE27EC70033910C /* Assets.xcassets */; };
+		030958472C22170300610009 /* AddMarkers.md in Resources */ = {isa = PBXBuildFile; fileRef = 030958462C22170300610009 /* AddMarkers.md */; };
 		031816792BF105D400D87BC1 /* screenshot1.png in Resources */ = {isa = PBXBuildFile; fileRef = 031816772BF105D400D87BC1 /* screenshot1.png */; };
 		0318167A2BF105D400D87BC1 /* screenshot2.png in Resources */ = {isa = PBXBuildFile; fileRef = 031816782BF105D400D87BC1 /* screenshot2.png */; };
 		034281FF2BE2FFBF00C7379C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 034281FD2BE2FFBF00C7379C /* LaunchScreen.storyboard */; };
@@ -24,6 +25,7 @@
 		03066B512BE27EC60033910C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		03066B542BE27EC60033910C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		03066B562BE27EC70033910C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		030958462C22170300610009 /* AddMarkers.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = AddMarkers.md; sourceTree = "<group>"; };
 		031816772BF105D400D87BC1 /* screenshot1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot1.png; sourceTree = "<group>"; };
 		031816782BF105D400D87BC1 /* screenshot2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot2.png; sourceTree = "<group>"; };
 		034281FE2BE2FFBF00C7379C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 			children = (
 				03571B022BE3C3720064DAF1 /* LICENSE.txt */,
 				03571B012BE3C3720064DAF1 /* README.md */,
+				030958462C22170300610009 /* AddMarkers.md */,
 				031816772BF105D400D87BC1 /* screenshot1.png */,
 				031816782BF105D400D87BC1 /* screenshot2.png */,
 				03066B4C2BE27EC60033910C /* VectorFields */,
@@ -134,6 +137,7 @@
 			files = (
 				034281FF2BE2FFBF00C7379C /* LaunchScreen.storyboard in Resources */,
 				03066B572BE27EC70033910C /* Assets.xcassets in Resources */,
+				030958472C22170300610009 /* AddMarkers.md in Resources */,
 				03571B032BE3C3720064DAF1 /* README.md in Resources */,
 				0318167A2BF105D400D87BC1 /* screenshot2.png in Resources */,
 				031816792BF105D400D87BC1 /* screenshot1.png in Resources */,
@@ -228,12 +232,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "Vector Fields";
+				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -286,11 +290,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "Vector Fields";
+				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -306,8 +310,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44LNM8FN8U;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vector Fields";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "The camera will be used for augmented reality.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -316,7 +321,7 @@
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -343,8 +348,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44LNM8FN8U;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vector Fields";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "The camera will be used for augmented reality.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -353,7 +359,7 @@
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
