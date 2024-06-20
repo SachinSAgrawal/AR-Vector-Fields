@@ -50,7 +50,7 @@ I have not tested this app super rigorously, so I would not be surprised if ther
 * v1.1 - some sin/cos support
 * v1.2 - better error handling
 * v1.3 - improved regex matching
-# v1.4 - change world origin
+* v1.4 - change world origin
 
 ## To-Do List
 - [x] Add ability to change world origin
