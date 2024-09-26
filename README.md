@@ -51,6 +51,7 @@ I have not tested this app super rigorously, so I would not be surprised if ther
 * v1.2 - better error handling
 * v1.3 - improved regex matching
 * v1.4 - change world origin
+* v1.5 - support iOS 18 icons
 
 ## To-Do List
 - [x] Add ability to change world origin
