@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="retina6_12" orientation="portrait" appearance="dark"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+    <device id="retina6_3" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,15 +13,16 @@
             <objects>
                 <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="Vector_Fields" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="U0K-SW-4ec">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BrB-h1-WRS">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                             </arscnView>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Vector Field Here" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="8Lz-dc-bMf">
-                                <rect key="frame" x="71.666666666666686" y="109" width="250" height="34"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Enter Vector Field Here" textAlignment="center" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="8Lz-dc-bMf">
+                                <rect key="frame" x="76" y="148" width="250" height="36"/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="0hr-xw-OgU"/>
                                     <constraint firstAttribute="width" constant="250" id="JRI-RJ-p03"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -30,6 +31,44 @@
                                     <action selector="textFieldChanged:" destination="BV1-FR-VrT" eventType="editingDidEnd" id="nvi-V8-EQn"/>
                                 </connections>
                             </textField>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="30U-V1-kcF">
+                                <rect key="frame" x="76" y="637.33333333333337" width="250" height="120.66666666666663"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Length" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pwE-E3-DI7">
+                                        <rect key="frame" x="98.666666666666657" y="0.0" width="53" height="20.333333333333332"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="ycX-P1-we9">
+                                        <rect key="frame" x="25" y="24.333333333333258" width="200" height="34"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="200" id="bhW-6d-cQy"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="lengthSliderChanged:" destination="BV1-FR-VrT" eventType="valueChanged" id="jiD-4I-h4g"/>
+                                        </connections>
+                                    </slider>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thickness" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R8W-cd-RFG">
+                                        <rect key="frame" x="86.333333333333343" y="62.333333333333265" width="77.333333333333343" height="20.333333333333336"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Qnt-MV-Fqb">
+                                        <rect key="frame" x="25" y="86.666666666666629" width="200" height="34"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="200" id="d5w-Ap-yie"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="thicknessSliderChanged:" destination="BV1-FR-VrT" eventType="valueChanged" id="XKi-IC-Kl4"/>
+                                        </connections>
+                                    </slider>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="TJW-ki-McG"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fQZ-KI-GVf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -38,13 +77,19 @@
                             <constraint firstItem="8Lz-dc-bMf" firstAttribute="centerX" secondItem="U0K-SW-4ec" secondAttribute="centerX" id="QKY-7m-Ji3"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="bottom" secondItem="U0K-SW-4ec" secondAttribute="bottom" id="VpT-BR-CcM"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="trailing" secondItem="U0K-SW-4ec" secondAttribute="trailing" id="XyZ-9z-H8e"/>
-                            <constraint firstItem="8Lz-dc-bMf" firstAttribute="top" secondItem="fQZ-KI-GVf" secondAttribute="top" constant="50" id="ghx-ED-U3Q"/>
+                            <constraint firstItem="8Lz-dc-bMf" firstAttribute="top" secondItem="fQZ-KI-GVf" secondAttribute="top" constant="24" id="ghx-ED-U3Q"/>
+                            <constraint firstItem="30U-V1-kcF" firstAttribute="centerX" secondItem="8Lz-dc-bMf" secondAttribute="centerX" id="k2G-AY-k0D"/>
                             <constraint firstItem="BrB-h1-WRS" firstAttribute="top" secondItem="U0K-SW-4ec" secondAttribute="top" id="rJc-2c-zQA"/>
+                            <constraint firstItem="fQZ-KI-GVf" firstAttribute="bottom" secondItem="30U-V1-kcF" secondAttribute="bottom" constant="48" id="yYb-sA-JP7"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="lengthLabel" destination="pwE-E3-DI7" id="zfP-Oj-4rv"/>
+                        <outlet property="lengthSlider" destination="ycX-P1-we9" id="vQC-bc-DXG"/>
                         <outlet property="sceneView" destination="BrB-h1-WRS" id="5nT-qQ-ynl"/>
                         <outlet property="textField" destination="8Lz-dc-bMf" id="GEB-bm-Wq7"/>
+                        <outlet property="thicknessLabel" destination="R8W-cd-RFG" id="oM6-hS-FqX"/>
+                        <outlet property="thicknessSlider" destination="Qnt-MV-Fqb" id="ScD-Ki-3RC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>

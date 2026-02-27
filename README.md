@@ -10,7 +10,9 @@ Simply enter a vector field to view it in Augmented Reality. I created this app 
 This is heavily based on this cool [Desmos 3D graph](https://www.desmos.com/3d/lwagvtqhn3) by Elliot Wymore that allows you to input each component of a vector field and see it graphed. That was largely my reference for this project. One thing to note though is that in Desmos, the z-axis is up, but in SceneKit, it is the y-axis, which does not really change many things. 
 
 ## Usage
-When the app is launched, there will be a popup asking you to input a vector field. Enter one in the text box in the top center of the app. As long as it is valid, it will be graphed. You should receive a warning popup if that is not the case. Please enter the vector field as one string, with each of the three components separated by commas, and no parentheses, then hit `Done`. Each component can be a function of `x`, `y`, `z`, or even constant. You can input almost anything, including square roots, absolute values, powers, and logarithms, but you might need to type them in as pseudo-Swift so it can be parsed properly. This does mean that to multiply two or more terms, you need to type in a `*` between each one, etc. Also, the length of each arrow corresponds to the magnitude of the vector at that point, and lastly, people occlusion is enabled. The latest feature is the ability to move the world origin (and therefore the grid origin) to the location of an ArUco marker. Currently, only the `6x6_1000-0` marker can be used, but look at `AddMarkers.md` to see how to add more. As soon as the marker is detected, the grid and any vectors present will move.
+When the app is launched, there will be a popup asking you to input a vector field. Enter one in the text box in the top center of the app. As long as it is valid, it will be graphed. You should receive a warning popup if that is not the case. Please enter the vector field as one string, with each of the three components separated by commas, and no parentheses, then hit `Done`. Each component can be a function of `x`, `y`, `z`, or even constant. You can input almost anything, including square roots, absolute values, powers, and logarithms, but you might need to type them in as pseudo-Swift so it can be parsed properly. This does mean that to multiply two or more terms, you need to type in a `*` between each one, etc.  <br>
+The length of each arrow corresponds to the magnitude of the vector at that point, and the relative lengths of all arrows can be adjusted using the associated slider. The thickness of the arrows can also be adjusted the slider below the aforementioned one. <br>
+Other things to note are that people occlusion is enabled, and the world origin (and therefore the grid origin) has the ability to be moved to the location of an ArUco marker. Currently, only the `6x6_1000-0` marker can be used, but look at `AddMarkers.md` to see how to add more. As soon as the marker is detected, the grid and any vectors present will move.
 
 ## Challenges
 * Orienting the vector correctly: solved using the `look(at:up:localFront:)`, where `up` and `localFront` are both the *j* vector, instead of using the `atan2` function, which was my inital method.
@@ -27,7 +29,7 @@ Hopefully this goes without saying, but you need Xcode, which is only available 
 
 #### Notes
 You can run this app on the Xcode simulator or connect a physical device. <br>
-The device must be either an iPhone or iPad running iOS 16.0 or newer. <br>
+The device must be either an iPhone or iPad running iOS 26.0 or newer. <br>
 If using a simulator, you can only view the vector field along the x-axis.
 
 ## SDKs
@@ -52,10 +54,11 @@ I have not tested this app super rigorously, so I would not be surprised if ther
 * v1.3 - improved regex matching
 * v1.4 - change world origin
 * v1.5 - support iOS 18 icons
+* v1.6 - add sliders & Liquid Glass
 
 ## To-Do List
 - [x] Add ability to change world origin
-- [ ] Add sliders to control arrow attributes
+- [x] Add sliders to control arrow attributes
 
 ## Contributors
 Sachin Agrawal: I'm a self-taught programmer who knows many languages and I'm into app, game, and web development. For more information, check out my website or Github profile. If you would like to contact me, my email is [github@sachin.email](mailto:github@sachin.email).
