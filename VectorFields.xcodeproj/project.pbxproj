@@ -17,6 +17,8 @@
 		034281FF2BE2FFBF00C7379C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 034281FD2BE2FFBF00C7379C /* LaunchScreen.storyboard */; };
 		03571B032BE3C3720064DAF1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 03571B012BE3C3720064DAF1 /* README.md */; };
 		03571B042BE3C3720064DAF1 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 03571B022BE3C3720064DAF1 /* LICENSE.txt */; };
+		03A1E0022C3A100000000002 /* ExpressionEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A1E0012C3A100000000001 /* ExpressionEvaluator.swift */; };
+		03A1E0042C3A100000000004 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A1E0032C3A100000000003 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,9 @@
 		034281FE2BE2FFBF00C7379C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		03571B012BE3C3720064DAF1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03571B022BE3C3720064DAF1 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		03A1E0012C3A100000000001 /* ExpressionEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionEvaluator.swift; sourceTree = "<group>"; };
+		03A1E0032C3A100000000003 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		03A1E0052C3A100000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,10 +74,13 @@
 			isa = PBXGroup;
 			children = (
 				03066B4D2BE27EC60033910C /* AppDelegate.swift */,
+				03A1E0032C3A100000000003 /* SceneDelegate.swift */,
 				03066B512BE27EC60033910C /* ViewController.swift */,
+				03A1E0012C3A100000000001 /* ExpressionEvaluator.swift */,
 				03066B532BE27EC60033910C /* Main.storyboard */,
 				034281FD2BE2FFBF00C7379C /* LaunchScreen.storyboard */,
 				03066B562BE27EC70033910C /* Assets.xcassets */,
+				03A1E0052C3A100000000005 /* Info.plist */,
 			);
 			path = VectorFields;
 			sourceTree = "<group>";
@@ -154,7 +162,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				03066B522BE27EC60033910C /* ViewController.swift in Sources */,
+				03A1E0022C3A100000000002 /* ExpressionEvaluator.swift in Sources */,
 				03066B4E2BE27EC60033910C /* AppDelegate.swift in Sources */,
+				03A1E0042C3A100000000004 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,6 +320,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LP92N2QT42;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VectorFields/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Vector Fields";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The camera will be used for augmented reality.";
@@ -348,6 +359,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LP92N2QT42;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VectorFields/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Vector Fields";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The camera will be used for augmented reality.";

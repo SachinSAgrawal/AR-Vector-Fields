@@ -24,6 +24,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     private var textFieldBackgroundView: UIVisualEffectView?
     private var suppressTextFieldChangeHandling: Bool = false
 
+    // Share one unit sized geometry between every arrow and scale each node to size
+    private let arrowShaftGeometry = SCNCylinder(radius: 1, height: 1)
+    private let arrowHeadGeometry = SCNCone(topRadius: 0, bottomRadius: 1, height: 1)
+
+    // Hold the parts of an arrow the sliders resize so dragging never rebuilds the scene
+    private struct Arrow {
+        let shaftNode: SCNNode
+        let headNode: SCNNode
+        let magnitude: Float
+    }
+
+    private var arrows: [Arrow] = []
+    private var appliedThickness: CGFloat = -1
+    private var appliedLengthScale: CGFloat = -1
+
     // MARK: View Loaded
     
     override func viewDidLoad() {
@@ -146,9 +161,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         textFieldBackgroundView = glassView
     }
 
-    // Helper to refresh only the vector arrows
-    func refreshVectorField() {
-        textFieldChanged(self)
+    // Resize every arrow in place using its scale transform
+    private func applyArrowDimensions(force: Bool = false) {
+        // Ignore the duplicate event that arrives from wiring each slider up twice
+        guard force || arrowThickness != appliedThickness || arrowLengthScale != appliedLengthScale else { return }
+
+        appliedThickness = arrowThickness
+        appliedLengthScale = arrowLengthScale
+
+        // Size the head from the thickness alone so it does not grow with the shaft
+        let headHeight = arrowThickness * 5.0
+        let headRadius = arrowThickness * 2.5
+
+        for arrow in arrows {
+            // Only the shaft is proportional to the magnitude of the vector
+            let shaftLength = arrowLengthScale * CGFloat(arrow.magnitude)
+
+            arrow.shaftNode.scale = SCNVector3(Float(arrowThickness), Float(shaftLength), Float(arrowThickness))
+            arrow.headNode.scale = SCNVector3(Float(headRadius), Float(headHeight), Float(headRadius))
+            arrow.headNode.position = SCNVector3(0, Float(shaftLength / 2.0) + Float(headHeight / 2.0), 0)
+        }
     }
     
     // MARK: Popups
@@ -157,7 +189,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func showPopup(_ message: String, title: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alertController, animated: true, completion: nil)
+
+        // Replace an alert that is already up since presenting on top of one does nothing
+        if let existing = presentedViewController {
+            existing.dismiss(animated: false) { [weak self] in
+                self?.present(alertController, animated: true, completion: nil)
+            }
+        } else {
+            present(alertController, animated: true, completion: nil)
+        }
     }
 
     // Function to display the initial popup when the view loads
@@ -173,13 +213,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             return
         }
 
+        rebuildVectorField()
+    }
+
+    // Clear the existing arrows and graph whatever the text field currently holds
+    private func rebuildVectorField() {
         // Remove existing arrows only and preserve grid
         sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
             if node.name == "arrow" {
                 node.removeFromParentNode()
             }
         }
-        
+
+        arrows.removeAll()
+
         // Create arrows based on the new vector field function
         createVectorField()
     }
@@ -190,15 +237,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @IBAction func thicknessSliderChanged(_ sender: UISlider) {
         arrowThickness = CGFloat(sender.value)
         thicknessLabel?.text = String(format: "Thickness: %.3f", sender.value)
+        applyArrowDimensions()
     }
 
     // Update the label in real time as the length slider changes
     @IBAction func lengthSliderChanged(_ sender: UISlider) {
         arrowLengthScale = CGFloat(sender.value)
         lengthLabel?.text = String(format: "Length: %.3f", sender.value)
+        applyArrowDimensions()
     }
 
-    // Programmatic handler regardless of IB wiring
+    // Resize the arrows as the value moves regardless of the storyboard wiring
     @objc func sliderValueChanged(_ sender: UISlider) {
         if sender === thicknessSlider {
             arrowThickness = CGFloat(sender.value)
@@ -207,9 +256,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             arrowLengthScale = CGFloat(sender.value)
             lengthLabel?.text = String(format: "Length: %.3f", sender.value)
         }
+
+        applyArrowDimensions()
     }
 
-    // Apply the final value and refresh when user has finished interacting with slider
+    // Apply the final value once the user lifts off in case the last event was missed
     @objc func sliderTouchEnded(_ sender: UISlider) {
         if sender === thicknessSlider {
             arrowThickness = CGFloat(sender.value)
@@ -219,7 +270,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             lengthLabel?.text = String(format: "Length: %.3f", sender.value)
         }
 
-        refreshVectorField()
+        applyArrowDimensions()
     }
     
     // MARK: Render Grid
@@ -296,169 +347,108 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // Function to create the vector field based on the user input
     func createVectorField() {
         // Check if there is a valid vector field input
-        guard let vectorField = textField.text else {
+        guard let vectorField = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !vectorField.isEmpty else {
             return
         }
-        
-        let trigFunctions = ["tan", "csc", "sec", "cot", "tangent", "cosecant", "secant", "cotangent"]
 
-        // Check if any trigFunctions exist in the vectorField string
-        let hasKeyword = trigFunctions.contains {
-            keyword in vectorField.contains(keyword)
-        }
-        
-        // If so then do not continue and show a popup warning
-        guard !hasKeyword else {
-            showPopup("Trigonometric functions besides sin and cos are not allowed.", title: "Invalid")
+        // Split the input into its three components and repair what can be repaired
+        let parsed: ExpressionSyntax.Components
+        do {
+            parsed = try ExpressionSyntax.components(of: vectorField)
+        } catch {
+            showPopup(error.localizedDescription, title: "Invalid")
             return
         }
-        
-        // Split the vector field input into its components
-        let components = vectorField.split(separator: ",")
-        
-        // Check if there are exactly 3 components
-        guard components.count == 3 else {
-            // Display an invalid vector field popup if the number of components is not 3
-            showPopup("The vector field must have 3 components separated by commas.", title: "Invalid")
-            return
+
+        // Parse each component once up front instead of again at every grid point
+        var compiled: [CompiledExpression] = []
+        for (index, expression) in parsed.expressions.enumerated() {
+            do {
+                compiled.append(try ExpressionParser.compile(expression))
+            } catch {
+                let description = error.localizedDescription
+                showPopup("Component \(index + 1), \"\(expression)\", could not be read. \(description)", title: "Invalid")
+                return
+            }
         }
-        
-        // Check if the number of open parentheses matches the number of closed ones in the first and third components
-        let firstComponent = components[0]
-        let thirdComponent = components[2]
 
-        let firstOpenParenthesesCount = firstComponent.filter { $0 == "(" }.count
-        let firstClosedParenthesesCount = firstComponent.filter { $0 == ")" }.count
+        // Function representing the vector field or nil where the field is undefined
+        func vectorFieldFunction(x: Float, y: Float, z: Float) -> SCNVector3? {
+            // Evaluate each component of the vector field at the given point
+            let values = compiled.compactMap { $0.value(x: Double(x), y: Double(y), z: Double(z)) }
+            guard values.count == compiled.count else { return nil }
 
-        let thirdOpenParenthesesCount = thirdComponent.filter { $0 == "(" }.count
-        let thirdClosedParenthesesCount = thirdComponent.filter { $0 == ")" }.count
+            // Narrowing to Float can overflow to infinity even when the Double was finite
+            let components = values.map { Float($0) }
+            guard components.allSatisfy({ $0.isFinite }) else { return nil }
 
-        guard firstOpenParenthesesCount == firstClosedParenthesesCount,
-              thirdOpenParenthesesCount == thirdClosedParenthesesCount else {
-            // Display an invalid vector field popup if the parentheses are not properly placed
-            showPopup("Please do not put parentheses surrounding the vector field.", title: "Invalid")
-            return
-        }
-        
-        // Function representing the vector field
-        func vectorFieldFunction(x: Float, y: Float, z: Float) -> SCNVector3 {
-            // Evaluate each component of the vector field at a given point (x, y, z)
-            let component1 = evaluateComponent(String(components[0]), x: x, y: y, z: z)
-            let component2 = evaluateComponent(String(components[1]), x: x, y: y, z: z)
-            let component3 = evaluateComponent(String(components[2]), x: x, y: y, z: z)
-            
             // Create a SCNVector3 representing the components of the vector field at the given point
-            let vectorComps = SCNVector3(component1, component2, component3)
-            return vectorComps
-        }
-        
-        // Define a function to compute the Taylor series expansion of sin(x) up to ten terms
-        func taylorSeriesSin(_ argString: String) -> String {
-            return "\(argString) - (\(argString)^3 / 6) + (\(argString)^5 / 120) - (\(argString)^7 / 5040) + (\(argString)^9 / 362880) - (\(argString)^11 / 39916800) + (\(argString)^13 / 6227020800) - (\(argString)^15 / 1307674368000) + (\(argString)^17 / 17) - (\(argString)^19 / 121645100408832000)"
+            return SCNVector3(components[0], components[1], components[2])
         }
 
-        // Define a function to compute the Taylor series expansion of cos(x) up to ten terms
-        func taylorSeriesCos(_ argString: String) -> String {
-            return "1 - (\(argString)^2 / 2) + (\(argString)^4 / 24) - (\(argString)^6 / 720) + (\(argString)^8 / 40320) - (\(argString)^10 / 362880) + (\(argString)^12 / 47900160) - (\(argString)^14 / 87178291200) + (\(argString)^16 / 20922789888000) - (\(argString)^18 / 6402373705728000) + (\(argString)^20 / 2432902008176640000)"
-        }
-
-        // Function to evaluate a component expression at a given point
-        func evaluateComponent(_ expression: String, x: Float, y: Float, z: Float) -> Float {
-            // Define regular expression patterns to match sin and cos function calls
-            let sinPattern = "(?<!co)(?i)sin(?:e)?\\(((?:[\\w\\d.+-]*[*/^])*[\\w\\d.+-]*)\\)"
-            let cosPattern = "(?i)cos(?:ine)?\\(((?:[\\w\\d.+-]*[*/^])*[\\w\\d.+-]*)\\)"
-            
-            // Create regular expressions using the patterns
-            let sinRegex = try! NSRegularExpression(pattern: sinPattern, options: [])
-            let cosRegex = try! NSRegularExpression(pattern: cosPattern, options: [])
-            
-            // Replace occurrences of sin function calls with their Taylor series expansions
-            var replacedExpression = expression
-            let sinMatches = sinRegex.matches(in: expression, options: [], range: NSRange(location: 0, length: expression.utf16.count))
-            for match in sinMatches.reversed() {
-                let argumentRange = Range(match.range(at: 1), in: expression)!
-                let argument = String(expression[argumentRange])
-                let taylorValue = taylorSeriesSin(argument)
-                replacedExpression = replacedExpression.replacingCharacters(in: Range(match.range, in: expression)!, with: "\(taylorValue)")
-            }
-            
-            // Replace occurrences of cos function calls with their Taylor series expansions
-            let cosMatches = cosRegex.matches(in: expression, options: [], range: NSRange(location: 0, length: expression.utf16.count))
-            for match in cosMatches.reversed() {
-                let argumentRange = Range(match.range(at: 1), in: expression)!
-                let argument = String(expression[argumentRange])
-                let taylorValue = taylorSeriesCos(argument)
-                replacedExpression = replacedExpression.replacingCharacters(in: Range(match.range, in: expression)!, with: "\(taylorValue)")
-            }
-            
-            // Replace 'x', 'y', and 'z' placeholders with their corresponding values in the expression
-            replacedExpression = replacedExpression
-                .replacingOccurrences(of: "x", with: "\(x)", options: .caseInsensitive)
-                .replacingOccurrences(of: "y", with: "\(y)", options: .caseInsensitive)
-                .replacingOccurrences(of: "z", with: "\(z)", options: .caseInsensitive)
-            
-            // Evaluate the modified expression and retrieve the numeric value
-            if let value = NSExpression(format: replacedExpression).expressionValue(with: nil, context: nil) as? NSNumber {
-                return value.floatValue
-            }
-            
-            // Return 0 if evaluation fails
-            return 0.0
-        }
-        
         // Define the parameters of the vector field
         let gridSize = 4
-        
+
         // MARK: Iterations
-        
+
         // Create arrows for each point in the vector field
         for x in -gridSize...gridSize {
             for y in -gridSize...gridSize {
                 for z in -gridSize...gridSize {
-                    // Define the position vector at the current point in the vector field grid
-                    let position = SCNVector3(Float(x), Float(y), Float(z))
-                    
                     // Calculate the vector at the current point in the vector field grid
-                    let vectorAtPoint = vectorFieldFunction(x: Float(x), y: Float(y), z: Float(z))
-                    
-                    // Calculate the resultant vector by adding the position vector to the vector at the current point
-                    let resultantVector = SCNVector3(position.x + vectorAtPoint.x, position.y + vectorAtPoint.y, position.z + vectorAtPoint.z)
+                    guard let vectorAtPoint = vectorFieldFunction(x: Float(x), y: Float(y), z: Float(z)) else {
+                        // Skip this point because the field is undefined here
+                        continue
+                    }
 
                     // Calculate the magnitude of the vector at the current point
                     let magnitude = sqrt(pow(vectorAtPoint.x, 2) + pow(vectorAtPoint.y, 2) + pow(vectorAtPoint.z, 2))
-                    
-                    // Calculate the length of the cylinder representing the arrow proportional to the magnitude
-                    let cylinderLength = arrowLengthScale * CGFloat(magnitude)
-                    
-                    // Create a cylinder representing the shaft of the arrow
-                    let cylinder = SCNCylinder(radius: arrowThickness, height: cylinderLength)
-                    let cylinderNode = SCNNode(geometry: cylinder)
-                    
-                    // Create a cone representing the head of the arrow scaled relative to thickness/length
-                    let coneHeight = max(0.02, cylinderLength * 0.5)
-                    let coneBottomRadius = max(arrowThickness * 1.5, arrowThickness * 2.5)
-                    let cone = SCNCone(topRadius: 0, bottomRadius: coneBottomRadius, height: coneHeight)
-                    let coneNode = SCNNode(geometry: cone)
-                    coneNode.position = SCNVector3(0, Float(cylinderLength / 2.0) + Float(coneHeight / 2.0), 0)
-                    
+
+                    // Skip a zero vector since it has no direction to point in
+                    guard magnitude > 0 else { continue }
+
+                    // Define the position of the arrow in the scene
+                    let position = SCNVector3(Float(x) / 2, Float(y) / 2, Float(z) / 2)
+
+                    // Calculate the resultant vector by adding the position vector to the vector at the current point
+                    let resultantVector = SCNVector3(position.x + vectorAtPoint.x, position.y + vectorAtPoint.y, position.z + vectorAtPoint.z)
+
+                    // Create the shaft and the head from the shared unit geometry
+                    let cylinderNode = SCNNode(geometry: arrowShaftGeometry)
+                    let coneNode = SCNNode(geometry: arrowHeadGeometry)
+
                     // Group the cylinder and cone to form the arrow
                     let arrowNode = SCNNode()
                     arrowNode.name = "arrow"
                     arrowNode.addChildNode(cylinderNode)
                     arrowNode.addChildNode(coneNode)
-                    
+
                     // Set the position of the arrow node to the current point in the vector field grid
-                    arrowNode.position = SCNVector3(Float(x) / 2, Float(y) / 2, Float(z) / 2)
-                    
+                    arrowNode.position = position
+
                     // Orient the arrow node to look towards the direction of the resultant vector
                     arrowNode.look(at: resultantVector, up: SCNVector3(0,1,0), localFront: SCNVector3(0,1,0))
-                    
-                    // Add the arrow to the scene if its magnitude is not zero
-                    if magnitude != 0 {
-                        sceneView.scene.rootNode.addChildNode(arrowNode)
-                    }
+
+                    // Add the arrow to the scene
+                    sceneView.scene.rootNode.addChildNode(arrowNode)
+                    arrows.append(Arrow(shaftNode: cylinderNode, headNode: coneNode, magnitude: magnitude))
                 }
             }
+        }
+
+        // Give every arrow its size now that the whole field has been built
+        applyArrowDimensions(force: true)
+
+        // Let the user know if the field read fine but had nothing to show
+        if arrows.isEmpty {
+            showPopup("That field is zero or undefined at every point on the grid, so there is nothing to draw.", title: "Notice")
+            return
+        }
+
+        // Otherwise mention anything that was quietly corrected in the input
+        if !parsed.notes.isEmpty {
+            showPopup(parsed.notes.joined(separator: " "), title: "Notice")
         }
     }
     
